@@ -1482,7 +1482,7 @@ error:
 
 int cluster_update_route(redisClusterContext *cc) {
     int ret;
-    int flag_err_not_set = 1;
+    int flag_err_not_set = 0;
     cluster_node *node;
     dictEntry *de;
 
@@ -1513,7 +1513,7 @@ int cluster_update_route(redisClusterContext *cc) {
             return REDIS_OK;
         }
 
-        flag_err_not_set = 0;
+        flag_err_not_set = 1;
     }
 
     if (flag_err_not_set) {
@@ -1814,6 +1814,7 @@ int redisClusterSetOptionAddNodes(redisClusterContext *cc, const char *addrs) {
     }
 
     for (i = 0; i < address_count; i++) {
+        sdstrim(address[i],"\t ");
         ret = redisClusterSetOptionAddNode(cc, address[i]);
         if (ret != REDIS_OK) {
             sdsfreesplitres(address, address_count);
